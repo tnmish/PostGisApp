@@ -8,7 +8,7 @@ var connectionString =configuration["Database:ConnectionString"] ?? throw new Ar
 
 builder.Services.AddDbContext<TestDbContext>(options =>
 {
-    options.UseNpgsql(connectionString);
+    options.UseNpgsql(connectionString, o => o.UseNetTopologySuite());
 });
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -20,6 +20,8 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
+
+app.UseDeveloperExceptionPage();
 app.UseStaticFiles();
 
 app.UseRouting();

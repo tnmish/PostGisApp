@@ -1,0 +1,33 @@
+﻿@model TestData.Entities.Warehouse
+
+<div class="modal-content">
+    <div class="modal-header">
+        <button class="close" data-dismiss="modal" area-hidden="true">X</button>
+        <h4>Добавить склад</h4>
+    </div>
+    <div class="modal-body">
+        @using (Html.BeginForm("AddWarehouse", "Home", FormMethod.Post))
+        {
+            @Html.ValidationSummary(true)
+            <fieldset>
+                @Html.HiddenFor(m => m.Id)
+                <p>
+                    @Html.LabelFor(m => m.Name, "Название склада")
+                    <br />
+                    @Html.EditorFor(m => m.Name, new { htmlAttributes = new { @class = "form-control", @data_val = "true", @required = "required" } })
+                </p>
+                <p>
+                    @Html.LabelFor(m => m.Director, "Директор")
+                    <br />
+                    @Html.EditorFor(m => m.Director, new { htmlAttributes = new { @class = "form-control", @data_val = "true", @required = "required" } })
+                </p>
+                <p>
+                    @Html.LabelFor(m => m.Address, "Адрес")
+                    <br />
+                    @Html.EditorFor(m => m.Address, new { htmlAttributes = new { @class = "form-control", @data_val = "true", @required = "required" } })
+                </p>
+                <p><input type="submit" value="Сохранить" /></p>
+            </fieldset>
+        }
+    </div>
+</div>

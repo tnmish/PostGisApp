@@ -2,7 +2,20 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="d-flex flex-row-reverse">
+    <div class="p-1">
+        <button id="addWarehouseBtn" type="button" class="btn btn-primary" onclick="OpenAddModal()">
+            Добавить склад
+        </button>
+    </div>    
+    <div class="p-2" id="map"></div>
 </div>
+
+<div id="modDialog" class="modal fade">
+    <div id="dialogContent" class="modal-dialog"></div>
+</div>
+
+<!--секция скриптов-->
+@section Scripts {
+    <script src="~/js/index.js" asp-append-version="true"></script>
+}
