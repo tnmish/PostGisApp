@@ -21,9 +21,10 @@ namespace TestData.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
+                    Director = table.Column<string>(type: "text", nullable: false),
                     Address = table.Column<string>(type: "text", nullable: false),
-                    ActivityType = table.Column<int>(type: "integer", nullable: false),
-                    Сoordinates = table.Column<Polygon>(type: "geometry", nullable: true)
+                    ActivityType = table.Column<string>(type: "text", nullable: true),
+                    Geometry = table.Column<Geometry>(type: "geometry", nullable: true)
                 },
                 constraints: table =>
                 {

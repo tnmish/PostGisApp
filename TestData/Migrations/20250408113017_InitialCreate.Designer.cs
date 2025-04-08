@@ -13,7 +13,7 @@ using TestData;
 namespace TestData.Migrations
 {
     [DbContext(typeof(TestDbContext))]
-    [Migration("20250407154927_InitialCreate")]
+    [Migration("20250408113017_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -33,19 +33,23 @@ namespace TestData.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int>("ActivityType")
-                        .HasColumnType("integer");
+                    b.Property<string>("ActivityType")
+                        .HasColumnType("text");
 
                     b.Property<string>("Address")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Director")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Polygon>("Сoordinates")
+                    b.Property<Geometry>("Geometry")
                         .HasColumnType("geometry");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 

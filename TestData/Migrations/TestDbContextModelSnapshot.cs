@@ -48,9 +48,6 @@ namespace TestData.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Polygon>("Сoordinates")
-                        .HasColumnType("geometry");
-
                     b.HasKey("Id");
 
                     b.ToTable("Warehouse");
