@@ -12,11 +12,23 @@ L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 var drawnItems = new L.FeatureGroup();
 map.addLayer(drawnItems);
 
-var drawControl = new L.Control.Draw({
+const drawControlOptions = {
+    position: 'topright',
+    draw: {
+        polygon: true, // Enable polygon drawing
+        polyline: false, // Disable polyline drawing
+        rectangle: true, // Enable rectangle drawing
+        circle: false, // Disable circle drawing
+        marker: true, // Enable marker drawing
+        circlemarker: false // Disable circle marker drawing
+    },
     edit: {
-        featureGroup: drawnItems
+        featureGroup: drawnItems, // Feature group to store drawn items
+        remove: true // Enable removal of shapes
     }
-});
+};
+
+var drawControl = new L.Control.Draw(drawControlOptions);
 map.addControl(drawControl);
 
 // Добавление модалки
@@ -30,7 +42,7 @@ function CloseModal() {
     document.getElementById('hideModal').style.display = 'none';
 }
 
-map.on('click', function (e) {
+/*map.on('click', function (e) {
     var useShape = $("input:radio[name=radio]:checked").val();
 
     switch (useShape) {
@@ -42,7 +54,22 @@ map.on('click', function (e) {
         }
     }
     
-})
+})*/
+
+map.on('draw:created', function (event) {
+    const layer = event.layer; // The created shape (e.g., rectangle, polygon)
+    drawnItems.addLayer(layer); // Add the shape to the feature group
+
+    // Optional: Log the type and properties of the shape
+    console.log('Shape created:', layer);
+    if (layer instanceof L.Rectangle) {
+        console.log('Rectangle bounds:', layer.getBounds());
+    } else if (layer instanceof L.Polygon) {
+        console.log('Polygon latlngs:', layer.getLatLngs());
+    } else if (layer instanceof L.Marker) {
+        console.log('Marker position:', layer.getLatLng());
+    }
+});
 
 // Получаем список складов
 fetch('/Home/GetList')
