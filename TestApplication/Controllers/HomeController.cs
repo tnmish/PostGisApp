@@ -28,25 +28,14 @@ namespace TestApplication.Controllers
             return View();
         }
 
-        [HttpGet]
-        public IActionResult AddWarehouse(GeometryType type, double lat, double lng)
+        private static JsonSerializerOptions GetSerializerOptions()
         {
-            var newWirehouse = new WarehouseDto()
+            var serializeOptions = new JsonSerializerOptions
             {
-                Id = Guid.NewGuid(),
+                WriteIndented = true
             };
-
-            switch (type)
-            {
-                case GeometryType.Point:
-                    newWirehouse.Type = type;
-                    newWirehouse.Latitude = lat;
-                    newWirehouse.Longitude = lng;
-                    break;
-            }
-
-
-            return PartialView(newWirehouse);
+            serializeOptions.Converters.Add(new GeometryJsonConverter());
+            return serializeOptions;
         }
 
         [HttpGet]
@@ -54,13 +43,9 @@ namespace TestApplication.Controllers
         {
             var result = await _repository.AllWarehouses();
 
-            var serializeOptions = new JsonSerializerOptions
-            {
-                WriteIndented = true
-            };
-            serializeOptions.Converters.Add(new GeometryJsonConverter());
+            
 
-            var jsonString = JsonSerializer.Serialize(result, serializeOptions);
+            var jsonString = JsonSerializer.Serialize(result, GetSerializerOptions());
 
             return Ok(jsonString);
         }
@@ -72,25 +57,26 @@ namespace TestApplication.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddWarehouse(WarehouseDto warehouseDto)
+        public async Task<IActionResult> AddWarehouse([FromBody] WarehouseDto warehouseDto)
         {
+            
             if (ModelState.IsValid)
             {
-                if (warehouseDto.Type is null)
+                if (warehouseDto.Geometry is null)
                 {
                     return BadRequest();
                 }
-
-                var geometryFactory = new GeometryFactory();
+                var geoJsonReader = new GeoJsonReader();
+                var geometry = geoJsonReader.Read<Geometry?>(warehouseDto.Geometry);
 
                 var warehouse = new Warehouse()
                 {
-                    Id = warehouseDto.Id,
+                    Id = Guid.NewGuid(),
                     Name = warehouseDto.Name,
                     Director = warehouseDto.Director,
                     ActivityType = warehouseDto.ActivityType,
                     Address = warehouseDto.Address,
-                    Geometry = geometryFactory.CreatePoint(new Coordinate(warehouseDto.Latitude, warehouseDto.Longitude)),
+                    Geometry = geometry,
                 };
                                 
                 await _repository.AddWarehouse(warehouse);

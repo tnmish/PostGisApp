@@ -17,6 +17,13 @@ builder.Services.AddScoped<IRepository, RepositoryADO>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin();
+    });
+});
 
 var app = builder.Build();
 

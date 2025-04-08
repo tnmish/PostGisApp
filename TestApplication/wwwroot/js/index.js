@@ -26,7 +26,7 @@ function CloseModal() {
 map.on('click', function (e) {
     latlng = e.latlng; //Полуаем координаты клика
     console.log(latlng);
-    L.marker(latlng).addTo(map);
+    L.marker(latlng).addTo(drawnItems);
 })
 
 // Получаем список складов
@@ -36,7 +36,7 @@ fetch('/Home/GetList')
 
         warehouses.forEach(warehouse => {
             if (warehouse.Geometry) {                
-                const geometry = warehouse.Geometry;
+                const geometry = JSON.parse(warehouse.Geometry);
                 if (geometry.type === 'Point') {
                     L.marker(geometry.coordinates).addTo(map)
                         .bindPopup(`<strong>${warehouse.Name}</strong>
@@ -52,3 +52,37 @@ fetch('/Home/GetList')
             
         });
     });
+
+$('#saveWarehouseBtn').on('click', function () {
+
+    const geometry = drawnItems.toGeoJSON().features[0].geometry;
+    console.log(geometry);
+    // Собираем данные из формы
+    const formData = {
+        Id: $('#Id').val(),
+        Name: $('#Name').val(),
+        Director: $('#Director').val(),
+        Address: $('#Address').val(),
+        ActivityType: $('#ActivityType').val(),
+        Geometry: JSON.stringify(geometry)
+    };
+
+    // Отправляем AJAX-запрос
+    $.ajax({
+        url: '/Home/AddWarehouse', // URL контроллера и действия
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(formData),
+        success: function (response) {
+            if (response.success) {
+                alert('Склад успешно добавлен!');
+                location.reload(); // Перезагрузка страницы или обновление карты
+            } else {
+                alert(response.message || 'Ошибка при сохранении!');
+            }
+        },
+        error: function () {
+            alert('Произошла ошибка при отправке запроса.');
+        }
+    });
+});

@@ -17,7 +17,7 @@ namespace TestApplication.Converters
 
         public override void Write(Utf8JsonWriter writer, Geometry value, JsonSerializerOptions options)
         {
-            writer.WriteRawValue(geoJsonWriter.Write(value));
+            writer.WriteStringValue(geoJsonWriter.Write(value));
         }
     }
 }

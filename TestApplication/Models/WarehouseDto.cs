@@ -5,8 +5,6 @@ namespace TestApplication.Models
 {
     public class WarehouseDto
     {
-        public Guid Id { get; init; }
-
         /// <summary>
         /// Имя
         /// </summary>
@@ -30,9 +28,6 @@ namespace TestApplication.Models
         /// <summary>
         /// Координаты
         /// </summary>
-        public GeometryType? Type { get; set; }
-
-        public double Longitude { get; set; }
-        public double Latitude { get; set; }
+        public string? Geometry { get; init; }
     }
 }
