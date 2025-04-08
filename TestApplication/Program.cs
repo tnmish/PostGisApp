@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TestData;
+using TestData.Repos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +10,11 @@ var connectionString =configuration["Database:ConnectionString"] ?? throw new Ar
 builder.Services.AddDbContext<TestDbContext>(options =>
 {
     options.UseNpgsql(connectionString, o => o.UseNetTopologySuite());
+    options.LogTo(Console.WriteLine, LogLevel.Information);
 });
+
+builder.Services.AddScoped<IRepository, Repository>();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 

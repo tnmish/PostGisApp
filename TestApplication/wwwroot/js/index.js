@@ -17,4 +17,22 @@
         $('#dialogContent').html(data)
             $('#modDialog').modal('show')
         })
-    }
+}
+
+fetch('/Home/GetList')
+    .then(response => response.json())
+    .then(warehouses => {
+        warehouses.forEach(warehouse => {
+            if (warehouse.Geometry) {
+                const geometry = JSON.parse(warehouse.Geometry);
+                if (geometry.type === 'Point') {
+                    L.marker(geometry.coordinates).addTo(map)
+                        .bindPopup(`Директор: ${warehouse.Director}<br>Адрес: ${warehouse.Address}`);
+                } else if (geometry.type === 'Polygon') {
+                    L.polygon(geometry.coordinates).addTo(map)
+                        .bindPopup(`Директор: ${warehouse.Director}<br>Адрес: ${warehouse.Address}`);
+                }
+            }
+            
+        });
+    });

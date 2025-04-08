@@ -32,6 +32,6 @@ namespace TestData.Entities
         /// </summary>
         public Polygon? Сoordinates { get; init; }
 
-        public Geometry? Geometry { get; init; }
+        public Geometry? Geometry { get; set; }
     }
 }
