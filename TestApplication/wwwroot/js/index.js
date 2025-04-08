@@ -10,7 +10,9 @@ L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 var drawnItems = new L.FeatureGroup();
+var loadedItems = new L.FeatureGroup();
 map.addLayer(drawnItems);
+map.addLayer(loadedItems);
 
 const drawControlOptions = {
     position: 'topright',
@@ -42,20 +44,6 @@ function CloseModal() {
     document.getElementById('hideModal').style.display = 'none';
 }
 
-/*map.on('click', function (e) {
-    var useShape = $("input:radio[name=radio]:checked").val();
-
-    switch (useShape) {
-        case 'marker': {
-            latlng = e.latlng; //Полуаем координаты клика   
-            const marker = L.marker(latlng);            
-            marker.addTo(drawnItems);
-            break;
-        }
-    }
-    
-})*/
-
 map.on('draw:created', function (event) {
     const layer = event.layer; // The created shape (e.g., rectangle, polygon)
     drawnItems.addLayer(layer); // Add the shape to the feature group
@@ -72,32 +60,52 @@ map.on('draw:created', function (event) {
 });
 
 // Получаем список складов
-fetch('/Home/GetList')
-    .then(response => response.json())
-    .then(warehouses => {       
+function getList() {
+    drawnItems.clearLayers();
+    return fetch('/Home/GetList')
+        .then(response => response.json())
+        .then(warehouses => {
 
-        warehouses.forEach(warehouse => {
-            if (warehouse.Geometry) {                
-                const geometry = JSON.parse(warehouse.Geometry);
-                if (geometry.type === 'Point') {
-                    L.marker(geometry.coordinates).addTo(map)
-                        .bindPopup(`<strong>${warehouse.Name}</strong>
+            warehouses.forEach(warehouse => {
+                if (warehouse.Geometry) {
+                    const geometry = JSON.parse(warehouse.Geometry);
+                    if (geometry.type === 'Point') {
+                        L.marker(geometry.coordinates).addTo(loadedItems)
+                            .bindPopup(`<strong>${warehouse.Name}</strong>
                         <br>Директор: ${warehouse.Director}
                         <br>Адрес: ${warehouse.Address}`);
-                } else if (geometry.type === 'Polygon') {
-                    L.polygon(geometry.coordinates).addTo(map)
-                        .bindPopup(`${warehouse.Name}
+                    } else if (geometry.type === 'Polygon') {
+                        L.polygon(geometry.coordinates).addTo(loadedItems)
+                            .bindPopup(`${warehouse.Name}
                         <br>Директор: ${warehouse.Director}
                         <br>Адрес: ${warehouse.Address}`);
+                    }
                 }
-            }
-            
+
+            });
         });
-    });
+};
+
+getList();
 
 $('#saveWarehouseBtn').on('click', function () {
 
     const geometry = drawnItems.toGeoJSON().features[0].geometry;
+
+    //непонятно почему после 100 строчки координаты меняются местамы, костылим их на место
+    if (geometry.type == 'Point') {
+        var tmp = geometry.coordinates[0];
+        geometry.coordinates[0] = geometry.coordinates[1];
+        geometry.coordinates[1] = tmp;
+    }
+    else {
+        let newCoordinates = [];
+        geometry.coordinates[0].forEach(coordinate => {
+            newCoordinates.push([coordinate[1], coordinate[0]]);
+        })
+        geometry.coordinates[0] = newCoordinates;
+    }    
+
     console.log(geometry);
     // Собираем данные из формы
     const formData = {
@@ -127,4 +135,6 @@ $('#saveWarehouseBtn').on('click', function () {
             alert('Произошла ошибка при отправке запроса.');
         }
     });
+
+    getList();
 });
