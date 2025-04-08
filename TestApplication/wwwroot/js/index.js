@@ -9,8 +9,15 @@ L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
-let drawnItems = new L.FeatureGroup();
+var drawnItems = new L.FeatureGroup();
 map.addLayer(drawnItems);
+
+var drawControl = new L.Control.Draw({
+    edit: {
+        featureGroup: drawnItems
+    }
+});
+map.addControl(drawControl);
 
 // Добавление модалки
 function OpenModal () {        
@@ -24,9 +31,17 @@ function CloseModal() {
 }
 
 map.on('click', function (e) {
-    latlng = e.latlng; //Полуаем координаты клика
-    console.log(latlng);
-    L.marker(latlng).addTo(drawnItems);
+    var useShape = $("input:radio[name=radio]:checked").val();
+
+    switch (useShape) {
+        case 'marker': {
+            latlng = e.latlng; //Полуаем координаты клика   
+            const marker = L.marker(latlng);            
+            marker.addTo(drawnItems);
+            break;
+        }
+    }
+    
 })
 
 // Получаем список складов
@@ -56,7 +71,7 @@ fetch('/Home/GetList')
 $('#saveWarehouseBtn').on('click', function () {
 
     const geometry = drawnItems.toGeoJSON().features[0].geometry;
-    console.log(geometry);
+    console.log(drawnItems);
     // Собираем данные из формы
     const formData = {
         Id: $('#Id').val(),

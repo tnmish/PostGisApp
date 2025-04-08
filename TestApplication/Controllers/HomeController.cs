@@ -60,29 +60,30 @@ namespace TestApplication.Controllers
         public async Task<IActionResult> AddWarehouse([FromBody] WarehouseDto warehouseDto)
         {
             
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                if (warehouseDto.Geometry is null)
-                {
-                    return BadRequest();
-                }
-                var geoJsonReader = new GeoJsonReader();
-                var geometry = geoJsonReader.Read<Geometry?>(warehouseDto.Geometry);
-
-                var warehouse = new Warehouse()
-                {
-                    Id = Guid.NewGuid(),
-                    Name = warehouseDto.Name,
-                    Director = warehouseDto.Director,
-                    ActivityType = warehouseDto.ActivityType,
-                    Address = warehouseDto.Address,
-                    Geometry = geometry,
-                };
-                                
-                await _repository.AddWarehouse(warehouse);
+                return BadRequest(ModelState);
             }
 
-            return RedirectToAction("Index");
+            if (warehouseDto.Geometry is null)
+            {
+                return BadRequest(warehouseDto.Geometry);
+            }
+            var geoJsonReader = new GeoJsonReader();
+            var geometry = geoJsonReader.Read<Geometry?>(warehouseDto.Geometry);
+
+            var warehouse = new Warehouse()
+            {
+                Id = Guid.NewGuid(),
+                Name = warehouseDto.Name,
+                Director = warehouseDto.Director,
+                ActivityType = warehouseDto.ActivityType,
+                Address = warehouseDto.Address,
+                Geometry = geometry,
+            };
+                              
+            await _repository.AddWarehouse(warehouse);
+            return Json(new { success = true });
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
