@@ -13,14 +13,12 @@ let drawnItems = new L.FeatureGroup();
 map.addLayer(drawnItems);
 
 // Добавление модалки
-function OpenModal () {        
-    document.getElementById('popup').style.display = 'block';    
-    document.getElementById('hideModal').style.display = 'block';
+function OpenAddModal () {        
+    document.getElementById('popup').style.display = document.getElementById('popup').style.display = 'block';    
 }
 
 function CloseModal() {
-    document.getElementById('popup').style.display = 'none';
-    document.getElementById('hideModal').style.display = 'none';
+    document.getElementById('popup').style.display = document.getElementById('popup').style.display = 'none';
 }
 
 map.on('click', function (e) {
