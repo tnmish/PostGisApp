@@ -4,8 +4,8 @@ namespace TestData.Repos
 {
     public interface IRepository
     {
-        Task<IEnumerable<Warehouse>> AllWarehouses();
+        Task<IEnumerable<Warehouse>> AllWarehousesAsync();
 
-        Task AddWarehouse(Warehouse warehouse);
+        Task AddWarehouseAsync(Warehouse warehouse);
     }
 }

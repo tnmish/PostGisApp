@@ -7,10 +7,9 @@ namespace TestData.Repos
 {
     public class RepositoryADO(IConfiguration configuration) : IRepository
     {
-        private readonly IConfiguration _configuration = configuration;
         private readonly string connectionString = configuration["Database:ConnectionString"] ?? throw new ArgumentNullException("Database:ConnectionString");
 
-        public async Task AddWarehouse(Warehouse warehouse)
+        public async Task AddWarehouseAsync(Warehouse warehouse)
         {            
             // Включаем поддержку PostGIS
             var npgsqlConnBuilder = new NpgsqlConnectionStringBuilder(connectionString);
@@ -59,7 +58,7 @@ namespace TestData.Repos
             return (bool?)cmd.ExecuteScalar() ?? false;
         }
 
-        public async Task<IEnumerable<Warehouse>> AllWarehouses()
+        public async Task<IEnumerable<Warehouse>> AllWarehousesAsync()
         {
             var npgsqlConnBuilder = new NpgsqlConnectionStringBuilder(connectionString);
             var result = new List<Warehouse>();

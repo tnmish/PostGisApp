@@ -3,6 +3,7 @@ using NetTopologySuite.Index.Strtree;
 
 namespace TestData
 {
+    [Obsolete("Использовать проверку на пересечения на уровне БД")]
     public static class GeometryIntersectionChecker
     {
         public static bool IntercectsAnyWithIndex(Geometry? target, IEnumerable<Geometry?> geometries)

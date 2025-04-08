@@ -14,15 +14,10 @@ namespace TestApplication.Controllers
 {
 
 
-    public class HomeController(TestDbContext dbContext,
-        IRepository repository,
-        ILogger<HomeController> logger) : Controller
+    public class HomeController(IRepository repository) : Controller
     {
-        private readonly TestDbContext _dbContext = dbContext;
         private readonly IRepository _repository = repository;
-        private readonly ILogger<HomeController> _logger = logger;
-        private readonly GeoJsonWriter geoJsonWriter = new();
-
+        
         public IActionResult Index()
         {
             return View();
@@ -41,7 +36,7 @@ namespace TestApplication.Controllers
         [HttpGet]
         public async Task<IActionResult> GetList()
         {
-            var result = await _repository.AllWarehouses();
+            var result = await _repository.AllWarehousesAsync();
 
             
 
@@ -82,7 +77,7 @@ namespace TestApplication.Controllers
                 Geometry = geometry,
             };
                               
-            await _repository.AddWarehouse(warehouse);
+            await _repository.AddWarehouseAsync(warehouse);
             return Json(new { success = true });
         }
 

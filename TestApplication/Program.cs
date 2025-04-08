@@ -5,7 +5,7 @@ using TestData.Repos;
 var builder = WebApplication.CreateBuilder(args);
 
 var configuration = builder.Configuration;
-var connectionString = configuration["Database:ConnectionString"] ?? throw new ArgumentNullException("Database:ConnectionString");
+var connectionString = configuration["Database:ConnectionString"] ?? throw new ArgumentNullException(configuration["Database:ConnectionString"]);
 
 builder.Services.AddDbContext<TestDbContext>(options =>
 {
