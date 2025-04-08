@@ -98,7 +98,7 @@ fetch('/Home/GetList')
 $('#saveWarehouseBtn').on('click', function () {
 
     const geometry = drawnItems.toGeoJSON().features[0].geometry;
-    console.log(drawnItems);
+    console.log(geometry);
     // Собираем данные из формы
     const formData = {
         Id: $('#Id').val(),

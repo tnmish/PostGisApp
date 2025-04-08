@@ -21,7 +21,7 @@ namespace TestData.Repos
 
             if (HasInterception(conn, warehouse.Geometry))
             {
-                return;
+                throw new InvalidDataException("Intercection");
             }
 
             string point = writer.Write(warehouse.Geometry);
