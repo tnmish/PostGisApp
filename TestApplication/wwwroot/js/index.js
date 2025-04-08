@@ -1,6 +1,7 @@
 ﻿
 //Определяем карту, координаты центра и начальный масштаб
 var map = L.map('map').setView([56.8516, 60.6122], 12);
+var latlng;
 
 //Добавляем на нашу карту слой OpenStreetMap
 L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -11,14 +12,21 @@ L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 let drawnItems = new L.FeatureGroup();
 map.addLayer(drawnItems);
 
-function OpenAddModal () {
-    console.log("cloch")
-    $.get('Home/AddWarehouse', function (data) {
+// Добавление модалки
+function OpenAddModal () {    
+    $.get(`Home/AddWarehouse?type=point&lat=${latlng.lat}&lng=${latlng.lng}`, function (data) {
     $('#dialogContent').html(data)
         $('#modDialog').modal('show')
     })
 }
 
+map.on('click', function (e) {
+    latlng = e.latlng; //Полуаем координаты клика
+    console.log(latlng);
+    L.marker(latlng).addTo(map);
+})
+
+// Получаем список складов
 fetch('/Home/GetList')
     .then(response => response.json())
     .then(warehouses => {       

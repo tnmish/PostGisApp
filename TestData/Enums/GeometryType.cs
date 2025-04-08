@@ -6,7 +6,7 @@ namespace TestData.Enums
         /// <summary>
         /// Маркер
         /// </summary>
-        Marker = 0,
+        Point = 0,
 
         /// <summary>
         /// Прямоугольник

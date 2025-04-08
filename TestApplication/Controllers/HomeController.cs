@@ -8,12 +8,13 @@ using TestData;
 using TestData.Entities;
 using TestData.Repos;
 using TestApplication.Converters;
+using GeometryType = TestData.Enums.GeometryType;
 
 namespace TestApplication.Controllers
 {
 
 
-    public class HomeController(TestDbContext dbContext, 
+    public class HomeController(TestDbContext dbContext,
         IRepository repository,
         ILogger<HomeController> logger) : Controller
     {
@@ -28,12 +29,22 @@ namespace TestApplication.Controllers
         }
 
         [HttpGet]
-        public IActionResult AddWarehouse()
+        public IActionResult AddWarehouse(GeometryType type, double lat, double lng)
         {
-            var newWirehouse = new Warehouse()
+            var newWirehouse = new WarehouseDto()
             {
                 Id = Guid.NewGuid(),
             };
+
+            switch (type)
+            {
+                case GeometryType.Point:
+                    newWirehouse.Type = type;
+                    newWirehouse.Latitude = lat;
+                    newWirehouse.Longitude = lng;
+                    break;
+            }
+
 
             return PartialView(newWirehouse);
         }
@@ -55,39 +66,33 @@ namespace TestApplication.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetWarehouse(Guid id)
-        {
-            var result = await _repository.GetWarehouse(id);
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return Json(result);
-        }
-
-        [HttpGet]
         public IActionResult ValidationError()
         {
             return PartialView();
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddWarehouse(Warehouse warehouse)
+        public async Task<IActionResult> AddWarehouse(WarehouseDto warehouseDto)
         {
             if (ModelState.IsValid)
             {
-                if (warehouse.Geometry is null)
-                {
-                    warehouse.Geometry = new Point(56.8516, 60.6122);
-                }
-
-                var warehouses = await _repository.AllWarehouses();
-                if (GeometryIntersectionChecker.IntercectsAnyWithIndex(warehouse.Geometry, warehouses.Select(x => x.Geometry)))
+                if (warehouseDto.Type is null)
                 {
                     return BadRequest();
                 }
 
+                var geometryFactory = new GeometryFactory();
+
+                var warehouse = new Warehouse()
+                {
+                    Id = warehouseDto.Id,
+                    Name = warehouseDto.Name,
+                    Director = warehouseDto.Director,
+                    ActivityType = warehouseDto.ActivityType,
+                    Address = warehouseDto.Address,
+                    Geometry = geometryFactory.CreatePoint(new Coordinate(warehouseDto.Latitude, warehouseDto.Longitude)),
+                };
+                                
                 await _repository.AddWarehouse(warehouse);
             }
 

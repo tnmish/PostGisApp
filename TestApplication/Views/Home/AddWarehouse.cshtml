@@ -1,4 +1,4 @@
-﻿@model TestData.Entities.Warehouse
+﻿@model TestApplication.Models.WarehouseDto
 
 <div class="modal-content">
     <div class="modal-header">
@@ -11,6 +11,9 @@
             @Html.ValidationSummary(true)
             <fieldset>
                 @Html.HiddenFor(m => m.Id)
+                @Html.HiddenFor(m => m.Latitude)
+                @Html.HiddenFor(m => m.Longitude)
+                @Html.HiddenFor(m => m.Type)                
                 <p>
                     @Html.LabelFor(m => m.Name, "Название склада")
                     <br />
@@ -25,6 +28,11 @@
                     @Html.LabelFor(m => m.Address, "Адрес")
                     <br />
                     @Html.EditorFor(m => m.Address, new { htmlAttributes = new { @class = "form-control", @data_val = "true", @required = "required" } })
+                </p>
+                <p>
+                    @Html.LabelFor(m => m.ActivityType, "Вид деятельности")
+                    <br />
+                    @Html.EditorFor(m => m.ActivityType, new { htmlAttributes = new { @class = "form-control", @data_val = "true", @required = "required" } })
                 </p>
                 <p><input type="submit" value="Сохранить" /></p>
             </fieldset>

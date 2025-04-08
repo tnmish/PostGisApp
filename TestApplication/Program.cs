@@ -5,7 +5,7 @@ using TestData.Repos;
 var builder = WebApplication.CreateBuilder(args);
 
 var configuration = builder.Configuration;
-var connectionString =configuration["Database:ConnectionString"] ?? throw new ArgumentNullException("Database:ConnectionString");
+var connectionString = configuration["Database:ConnectionString"] ?? throw new ArgumentNullException("Database:ConnectionString");
 
 builder.Services.AddDbContext<TestDbContext>(options =>
 {
@@ -13,7 +13,7 @@ builder.Services.AddDbContext<TestDbContext>(options =>
     options.LogTo(Console.WriteLine, LogLevel.Information);
 });
 
-builder.Services.AddScoped<IRepository, Repository>();
+builder.Services.AddScoped<IRepository, RepositoryADO>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

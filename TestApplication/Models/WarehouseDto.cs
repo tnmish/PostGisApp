@@ -1,9 +1,9 @@
 ﻿using NetTopologySuite.Geometries;
 using TestData.Enums;
 
-namespace TestData.Entities
+namespace TestApplication.Models
 {
-    public class Warehouse
+    public class WarehouseDto
     {
         public Guid Id { get; init; }
 
@@ -29,7 +29,10 @@ namespace TestData.Entities
 
         /// <summary>
         /// Координаты
-        /// </summary>        
-        public Geometry? Geometry { get; set; }
+        /// </summary>
+        public GeometryType? Type { get; set; }
+
+        public double Longitude { get; set; }
+        public double Latitude { get; set; }
     }
 }

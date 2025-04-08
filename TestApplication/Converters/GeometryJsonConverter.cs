@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace TestApplication.Converters
 {
-    internal class GeometryJsonConverter: JsonConverter<Geometry>
+    internal class GeometryJsonConverter : JsonConverter<Geometry>
     {
         private readonly GeoJsonWriter geoJsonWriter = new();
         private readonly GeoJsonReader geoJsonReader = new();

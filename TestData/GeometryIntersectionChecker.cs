@@ -12,7 +12,7 @@ namespace TestData
             if (target == null) return false;
 
             var tree = new STRtree<Geometry>();
-            foreach (var geom in geometries.Where(x => x!=null))
+            foreach (var geom in geometries.Where(x => x != null))
             {
                 tree.Insert(geom!.Envelope.EnvelopeInternal, geom);
 
