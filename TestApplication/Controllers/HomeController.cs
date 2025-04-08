@@ -1,18 +1,18 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using NetTopologySuite.Geometries;
+using NetTopologySuite.IO;
 using System.Diagnostics;
 using System.Text.Json;
 using TestApplication.Models;
 using TestData;
 using TestData.Entities;
 using TestData.Repos;
-using System.Text.Json.Serialization;
-using NetTopologySuite.IO;
-using TestData.Migrations;
+using TestApplication.Converters;
 
 namespace TestApplication.Controllers
 {
+
+
     public class HomeController(TestDbContext dbContext, 
         IRepository repository,
         ILogger<HomeController> logger) : Controller
@@ -20,6 +20,7 @@ namespace TestApplication.Controllers
         private readonly TestDbContext _dbContext = dbContext;
         private readonly IRepository _repository = repository;
         private readonly ILogger<HomeController> _logger = logger;
+        private readonly GeoJsonWriter geoJsonWriter = new();
 
         public IActionResult Index()
         {
@@ -41,21 +42,16 @@ namespace TestApplication.Controllers
         public async Task<IActionResult> GetList()
         {
             var result = await _repository.AllWarehouses();
-            var a = result.Select(x => new
-            {
-               x.Id,
-               x.Name,
-               x.Director,
-               x.Address,
-               Geometry = x.Geometry is not null ? new
-                   {
-                       type = x.Geometry.GeometryType,
-                        Coordinates = string.Join("", x.Geometry.Coordinates.Select(x => x.ToString()))
-                   }
-               : null,
-            });
 
-            return Json(a);
+            var serializeOptions = new JsonSerializerOptions
+            {
+                WriteIndented = true
+            };
+            serializeOptions.Converters.Add(new GeometryJsonConverter());
+
+            var jsonString = JsonSerializer.Serialize(result, serializeOptions);
+
+            return Ok(jsonString);
         }
 
         [HttpGet]
